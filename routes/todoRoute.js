@@ -4,11 +4,10 @@ const router = express.Router();
 
 // Todo Validation
 const validationSchema = require("../validationSchema/todoValidationSchema");
-const todoMiddleware= require("../middleware/todoMiddleware")
-
+const todoMiddleware = require("../middleware/todoMiddleware");
 
 // Controller
-const todoController = require("./../controllers/todoController");
+const todoController = require("../controllers/todoController");
 
 router
 	.route("/")

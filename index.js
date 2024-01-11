@@ -1,7 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
-const todoHandler = require("./routeHandler/todoHandler");
+const todoRoute = require("./routes/todoRoute");
 
 // express app initialization
 const app = express();
@@ -12,10 +12,8 @@ mongoose
 	.connect(process.env.DATABASE)
 	.then(() => console.log("DB connection successful!"));
 
-
-
 // application routes
-app.use("/todo", todoHandler);
+app.use("/todo", todoRoute);
 
 // default error handler
 function errorHandler(err, req, res, next) {
