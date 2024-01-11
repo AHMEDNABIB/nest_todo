@@ -130,7 +130,18 @@ exports.restoreTodo = async (req, res) => {
 	}
 };
 
+async function scheduleAutoDelete() {
+	try {
+		await Todo.deleteMany({ isDeleted: true });
+		console.log(
+			"Soft-deleted todos older than 2 days  have been permanently deleted."
+		);
+	} catch (error) {
+		console.error("Error in auto-delete process:", error);
+	}
+}
 
+const intervalInMilliseconds = 2 * 24 * 60 * 60 * 1000;
+setInterval(scheduleAutoDelete, intervalInMilliseconds);
 
-
-
+// setInterval(scheduleAutoDelete, 5000);
