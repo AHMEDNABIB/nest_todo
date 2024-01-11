@@ -5,7 +5,6 @@
   "scripts": {
     "start": "nodemon index.js",
     "production": "NODE_ENV=production nodemon index.js"
-    
   },
   "keywords": [],
   "license": "UNLICENSED",
@@ -13,6 +12,7 @@
   "dependencies": {
     "dotenv": "^16.3.1",
     "express": "^4.17.1",
+    "joi": "^17.11.0",
     "mongoose": "^5.12.2"
   }
 }

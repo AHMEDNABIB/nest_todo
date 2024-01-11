@@ -12,14 +12,11 @@ const todoSchema = mongoose.Schema(
       enum: ["pending", "done"],
       default: "pending",
     },
-    active: {
-      type: Boolean,
-      default: true,
-    },
-    date: {
-      type: Date,
-      default: Date.now,
-    },
+  
+    // date: {
+    //   type: Date,
+    //   default: Date.now,
+    // },
   },
   {
     timestamps: true,

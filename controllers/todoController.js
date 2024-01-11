@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
-const todoSchema = require("../schemas/todoSchema");
-const Todo = new mongoose.model("Todo", todoSchema);
+
+
+const Todo= require('../models/Todo')
 
 exports.getAllTodo = async (req, res) => {
 	
