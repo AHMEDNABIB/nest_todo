@@ -8,6 +8,6 @@ userRouter.post('/add', addUser );
 userRouter.put('/update/:id', updateUser );
 userRouter.delete('/delete/:id', deleteUser );
 userRouter.post('/login', loginUser );
-userRouter.post('/regis', addUser ); //regisUser
+userRouter.post('/register', addUser );
 
 module.exports = { userRouter };

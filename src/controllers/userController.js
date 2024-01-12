@@ -107,7 +107,6 @@ const deleteUser = async(req, res, next) => {
 const loginUser = async(req, res, next) => {
     try {
         const user = await User.findOne({email: req.body.email});
-        console.log(user);
         if(user){
             const isValidPassword = await bcrypt.compare(req.body.password, user.password)
             if(isValidPassword){
@@ -138,14 +137,6 @@ const loginUser = async(req, res, next) => {
         next(error)
     }
 }
-const regisUser = (req, res, next) => {
-    try {
-        res.status(200).send({
-            message: 'register user',
-        })
-    } catch (error) {
-        next(error)
-    }
-}
 
-module.exports = {getUsers,getUser,addUser,updateUser,deleteUser,loginUser,regisUser};
+
+module.exports = {getUsers,getUser,addUser,updateUser,deleteUser,loginUser};
