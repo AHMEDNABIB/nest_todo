@@ -28,6 +28,9 @@ const todoSchema = mongoose.Schema(
 	}
 );
 
+todoSchema.index({ expired_at: 1 }, { expireAfterSeconds: 2 * 24 * 60 * 60 });
+
+
 const Todo = mongoose.model("Todo", todoSchema);
 
 module.exports = Todo;

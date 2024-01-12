@@ -20,14 +20,13 @@ exports.getAllTodo = async (req, res) => {
 
 exports.createTodo = async (req, res) => {
 	try {
+		const newTodo = new Todo(req.body);
+		await newTodo.save();
 
-		 const newTodo = new Todo(req.body);
-			await newTodo.save();
-
-			res.status(201).json({
-				status: "success",
-				data: newTodo,
-			});
+		res.status(201).json({
+			status: "success",
+			data: newTodo,
+		});
 	} catch (error) {
 		res.status(404).json({
 			status: "failed",
@@ -96,6 +95,7 @@ exports.softDeleteTodo = async (req, res) => {
 			{
 				isDeleted: true,
 				expired_at: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
+			
 			},
 			{ new: true }
 		);
@@ -115,7 +115,7 @@ exports.restoreTodo = async (req, res) => {
 		const todoId = req.params.id;
 		const restoredTodo = await Todo.findByIdAndUpdate(
 			todoId,
-			{ isDeleted: false },
+			{ isDeleted: false, expired_at: null },
 			{ new: true }
 		);
 
