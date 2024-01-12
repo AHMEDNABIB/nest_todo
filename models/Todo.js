@@ -21,6 +21,7 @@ const todoSchema = mongoose.Schema(
 			enum: ["Low", "Medium", "High"],
 		},
 		isDeleted: { type: Boolean, default: false },
+		expired_at: { type: Date, default: null },
 	},
 	{
 		timestamps: true,

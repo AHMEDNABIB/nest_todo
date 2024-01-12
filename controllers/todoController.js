@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 
 const Todo = require("../models/Todo");
 
-// Get all todo
 exports.getAllTodo = async (req, res) => {
 	try {
 		const todo = await Todo.find({});
@@ -19,15 +18,16 @@ exports.getAllTodo = async (req, res) => {
 	}
 };
 
-// Create a todo
-
 exports.createTodo = async (req, res) => {
 	try {
-		const newTodo = await Todo.create(req.body);
-		res.status(201).json({
-			status: "success",
-			data: newTodo,
-		});
+
+		 const newTodo = new Todo(req.body);
+			await newTodo.save();
+
+			res.status(201).json({
+				status: "success",
+				data: newTodo,
+			});
 	} catch (error) {
 		res.status(404).json({
 			status: "failed",
@@ -36,7 +36,6 @@ exports.createTodo = async (req, res) => {
 	}
 };
 
-// get a todo
 exports.getTodo = async (req, res) => {
 	try {
 		const todo = await Todo.findById(req.params.id);
@@ -52,8 +51,6 @@ exports.getTodo = async (req, res) => {
 		});
 	}
 };
-
-// Update a todo
 
 exports.updateTodo = async (req, res) => {
 	try {
@@ -74,7 +71,6 @@ exports.updateTodo = async (req, res) => {
 	}
 };
 
-// Delete a Todo
 exports.permanentDeleteTodo = async (req, res) => {
 	try {
 		await Todo.findByIdAndDelete(req.params.id);
@@ -97,7 +93,10 @@ exports.softDeleteTodo = async (req, res) => {
 		const todoId = req.params.id;
 		const todo = await Todo.findByIdAndUpdate(
 			todoId,
-			{ isDeleted: true },
+			{
+				isDeleted: true,
+				expired_at: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
+			},
 			{ new: true }
 		);
 
@@ -129,19 +128,3 @@ exports.restoreTodo = async (req, res) => {
 		res.status(500).json({ error: "Internal Server Error" });
 	}
 };
-
-async function scheduleAutoDelete() {
-	try {
-		await Todo.deleteMany({ isDeleted: true });
-		console.log(
-			"Soft-deleted todos older than 2 days  have been permanently deleted."
-		);
-	} catch (error) {
-		console.error("Error in auto-delete process:", error);
-	}
-}
-
-const intervalInMilliseconds = 2 * 24 * 60 * 60 * 1000;
-setInterval(scheduleAutoDelete, intervalInMilliseconds);
-
-// setInterval(scheduleAutoDelete, 5000);
