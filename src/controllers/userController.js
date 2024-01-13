@@ -7,7 +7,7 @@ const jwt = require('jsonwebtoken');
 const getUsers = async(req,res,next) => {
     try {
         // const options = { password: 0 };
-        const users = await User.find();
+        const users = await User.find().select('-password');
         res.status(200).send({
             message: 'users were returned',
             users,
@@ -21,8 +21,7 @@ const getUsers = async(req,res,next) => {
 const getUser = async(req,res,next) => {
     try {
         const userId = req.params.id;
-        const options = {password: 0};
-        const user = await User.findById(userId)
+        const user = await User.findById(userId).select('-password');
         res.status(200).send({
             message: userId,
             user,
