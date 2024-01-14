@@ -6,7 +6,6 @@ const jwt = require('jsonwebtoken');
 
 const getUsers = async(req,res,next) => {
     try {
-        // const options = { password: 0 };
         const users = await User.find().select('-password');
         res.status(200).send({
             message: 'users were returned',
@@ -65,24 +64,22 @@ const updateUser = async (req, res, next) => {
         const userId = req.params.id;
         const { name, email, password, address, phone, role } = req.body;
 
-        const user = await User.findById(userId);
-        if (!user) {
+        const fieldsToUpdate = {
+            name,
+            email,
+            password: password && await bcrypt.hash(password, 10),
+            address,
+            phone,
+            role,
+        };
+
+        const updatedUser = await User.findByIdAndUpdate(userId, fieldsToUpdate, { new: true});
+
+        if (!updatedUser) {
             return res.status(404).send({
                 message: 'User not found',
             });
         }
-
-        if (name) user.name = name;
-        if (email) user.email = email;
-        if (password) {
-            const hashedPassword = await bcrypt.hash(password, 10);
-            user.password = hashedPassword;
-        }
-        if (address) user.address = address;
-        if (phone) user.phone = phone;
-        if (role) user.role = role;
-
-        const updatedUser = await user.save();
 
         res.status(200).send({
             message: 'User updated successfully',
@@ -92,6 +89,7 @@ const updateUser = async (req, res, next) => {
         next(error);
     }
 };
+
 const deleteUser = async(req, res, next) => {
     try {
         const id = req.params.id;
