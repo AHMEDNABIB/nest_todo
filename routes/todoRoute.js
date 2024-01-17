@@ -14,6 +14,8 @@ router
 	.get(todoController.getAllTodo)
 	.post(todoMiddleware(validationSchema.todoPOST), todoController.createTodo);
 
+router.get('/pagination', todoController.getAllTodoByPagination)
+
 router
 	.route("/:id")
 	.get(todoController.getTodo)
