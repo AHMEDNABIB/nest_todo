@@ -1,3 +1,4 @@
+const axios = require('axios');
 const createError = require('http-errors');
 const User = require('../models/userModel');
 const bcrypt = require('bcrypt');
@@ -15,8 +16,6 @@ const getUsers = async(req,res,next) => {
         next(error)
     }
 }
-
-
 const getUser = async(req,res,next) => {
     try {
         const userId = req.params.id;
@@ -89,11 +88,11 @@ const updateUser = async (req, res, next) => {
         next(error);
     }
 };
-
 const deleteUser = async(req, res, next) => {
     try {
         const id = req.params.id;
-        await User.findByIdAndDelete(id);
+        console.log(id);
+        const flag = await User.findByIdAndDelete(id);
         res.status(200).send({
             message: 'user was deleted successfully',
         })
@@ -111,7 +110,7 @@ const loginUser = async(req, res, next) => {
                     email: user.email,
                     id: user.id,
                 },process.env.JWT_SECRET,{
-                    expiresIn: '1h'
+                    expiresIn: '12h'
                 })
                 res.status(200).json({
                     "access token": token,
@@ -134,6 +133,51 @@ const loginUser = async(req, res, next) => {
         next(error)
     }
 }
+//for google signIn, need google_id_token from client site
+const googleSignIn = async (req, res, next) => {
+    try {
+        const { token } = req.body;
+    
+        const response = await axios.post('https://www.googleapis.com/oauth2/v3/tokeninfo', { id_token: token });
+        const googleUserData = response.data;
+    
+        const existingUser = await User.findOne({ email: googleUserData.email });
+    
+        if (existingUser) {
+          const token = jwt.sign(
+            { email: existingUser.email, id: existingUser.id },
+            process.env.JWT_SECRET,
+            { expiresIn: '12h' }
+          );
+    
+          return res.status(200).json({
+            "access token": token,
+            message: 'Google Sign-In successful',
+            user: existingUser
+          });
+        } else {
+          const newUser = new User({
+            name: googleUserData.name,
+            email: googleUserData.email,
+          });
+    
+          const savedUser = await newUser.save();
+    
+          const token = jwt.sign(
+            { email: savedUser.email, id: savedUser.id },
+            process.env.JWT_SECRET,
+            { expiresIn: '12h' }
+          );
+    
+          return res.status(200).json({
+            "access token": token,
+            message: 'Google Sign-In successful',
+            user: savedUser
+          });
+        }
+      } catch (error) {
+        next(error);
+      }
+}
 
-
-module.exports = {getUsers,getUser,addUser,updateUser,deleteUser,loginUser};
+module.exports = {getUsers,getUser,addUser,updateUser,deleteUser,loginUser,googleSignIn};
