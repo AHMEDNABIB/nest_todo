@@ -28,10 +28,10 @@ const userSchema = new Schema({
         required: [true, 'User password is required'],
         minlength: [6, 'the length of user password can be minimum 6 characters'],
     },
-    image: {
-        type: String,
-        default:defaultImagePath,
-    },
+    // image: {
+    //     type: String,
+    //     default:defaultImagePath,
+    // },
     address:{
         type: String,
         required: [true, 'User address is required'],

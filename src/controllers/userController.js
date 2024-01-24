@@ -111,11 +111,13 @@ const loginUser = async(req, res, next) => {
                     id: user.id,
                 },process.env.JWT_SECRET,{
                     expiresIn: '12h'
-                })
+                });
+                const userWithoutPassword = { ...user._doc };
+                delete userWithoutPassword.password;
                 res.status(200).json({
-                    "access token": token,
+                    "accessToken": token,
                     message: 'logged in successfully',
-                    user
+                    userWithoutPassword
                 })
             }
             else{
