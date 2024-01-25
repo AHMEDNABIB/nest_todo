@@ -23,7 +23,12 @@ router
 	.delete(todoController.softDeleteTodo);
 
 router.delete("/permanent/:id", todoController.permanentDeleteTodo);
+router.patch("/restore/:id", todoController.restoreTodo);
 
-router.put("/restore/:id", todoController.restoreTodo);
+router.patch("/important/:id", todoController.importantTodo);
+router.patch("/unimportant/:id", todoController.unImportantTodo);
+router.patch("/done/:id", todoController.doneTodo);
+router.patch("/priority/:id", todoController.priorityTodo);
+router.patch("/tags/:id", todoController.tagsTodo);
 
 module.exports = router;

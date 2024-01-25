@@ -3,46 +3,11 @@ const mongoose = require("mongoose");
 const Todo = require("../models/Todo");
 
 exports.getAllTodo = async (req, res) => {
-	// try {
-	// 	const todo = await Todo.find({});
-	// 	res.status(200).json({
-	// 		status: "success",
-	// 		results: todo.length,
-	// 		data: todo,
-	// 	});
-	// } catch (error) {
-	// 	res.status(404).json({
-	// 		status: "fail",
-	// 		message: error,
-	// 	});
-	// }
-
 	try {
-		const page = req.query.page * 1 || 1;
-		const limit = req.query.limit * 1 || 10;
-		const skip = (page - 1) * limit;
-
-		const totalTodo = await Todo.countDocuments();
-
-		if (skip >= totalTodo) {
-			return res.status(400).json({
-				status: "fail",
-				error: "These Page Does not exist",
-			});
-		}
-
-		const todo = await Todo.find().skip(skip).limit(limit);
-
-		const startTodo = skip + 1;
-		const endTodo = Math.min(skip + limit, totalTodo);
-
-		console.log();
-
+		const todo = await Todo.find({});
 		res.status(200).json({
 			status: "success",
-			startTodo,
-			endTodo,
-			totalTodo,
+			results: todo.length,
 			data: todo,
 		});
 	} catch (error) {
@@ -51,6 +16,42 @@ exports.getAllTodo = async (req, res) => {
 			message: error,
 		});
 	}
+
+	// try {
+	// 	console.log("ssssssss");
+	// 	const page = req.query.page * 1 || 1;
+	// 	const limit = req.query.limit * 1 || 10;
+	// 	const skip = (page - 1) * limit;
+
+	// 	const totalTodo = await Todo.countDocuments();
+	// 	console.log(skip);
+	// 	console.log(totalTodo);
+
+	// 	// if (skip >= totalTodo) {
+	// 	// 	return res.status(400).json({
+	// 	// 		status: "fail",
+	// 	// 		error: "These Page Does not exist",
+	// 	// 	});
+	// 	// }
+
+	// 	const todo = await Todo.find().skip(skip).limit(limit);
+
+	// 	const startTodo = skip + 1;
+	// 	const endTodo = Math.min(skip + limit, totalTodo);
+
+	// 	res.status(200).json({
+	// 		status: "success",
+	// 		startTodo,
+	// 		endTodo,
+	// 		totalTodo,
+	// 		data: todo,
+	// 	});
+	// } catch (error) {
+	// 	res.status(404).json({
+	// 		status: "fail",
+	// 		message: error,
+	// 	});
+	// }
 };
 
 exports.getAllTodoByPagination = async (req, res) => {
@@ -212,3 +213,120 @@ exports.restoreTodo = async (req, res) => {
 		res.status(500).json({ error: "Internal Server Error" });
 	}
 };
+
+
+exports.restoreTodo = async (req, res) => {
+	try {
+		const todoId = req.params.id;
+		const restoredTodo = await Todo.findByIdAndUpdate(
+			todoId,
+			{ isDeleted: false, expired_at: null },
+			{ new: true }
+		);
+
+		if (!restoredTodo) {
+			return res.status(404).json({ error: "Task not found" });
+		}
+
+		res.json(restoredTodo);
+	} catch (error) {
+		res.status(500).json({ error: "Internal Server Error" });
+	}
+};
+
+exports.importantTodo = async (req, res) => {
+	try {
+		const todo = await Todo.findByIdAndUpdate(req.params.id, req.body, {
+			new: true,
+			runValidators: true,
+		});
+
+		res.status(200).json({
+			status: "success",
+			data: todo,
+		});
+	} catch (err) {
+		res.status(404).json({
+			status: "fail",
+			message: err,
+		});
+	}
+};
+
+exports.unImportantTodo = async (req, res) => {
+	try {
+		const todo = await Todo.findByIdAndUpdate(req.params.id, req.body, {
+			new: true,
+			runValidators: true,
+		});
+
+		res.status(200).json({
+			status: "success",
+			data: todo,
+		});
+	} catch (err) {
+		res.status(404).json({
+			status: "fail",
+			message: err,
+		});
+	}
+};
+
+exports.priorityTodo = async (req, res) => {
+	try {
+		const todo = await Todo.findByIdAndUpdate(req.params.id, req.body, {
+			new: true,
+			runValidators: true,
+		});
+
+		res.status(200).json({
+			status: "success",
+			data: todo,
+		});
+	} catch (err) {
+		res.status(404).json({
+			status: "fail",
+			message: err,
+		});
+	}
+};
+
+exports.tagsTodo = async (req, res) => {
+	try {
+		const todo = await Todo.findByIdAndUpdate(req.params.id, req.body, {
+			new: true,
+			runValidators: true,
+		});
+
+		res.status(200).json({
+			status: "success",
+			data: todo,
+		});
+	} catch (err) {
+		res.status(404).json({
+			status: "fail",
+			message: err,
+		});
+	}
+};
+
+exports.doneTodo = async (req, res) => {
+	try {
+		const todo = await Todo.findByIdAndUpdate(req.params.id, req.body, {
+			new: true,
+			runValidators: true,
+		});
+
+		res.status(200).json({
+			status: "success",
+			data: todo,
+		});
+	} catch (err) {
+		res.status(404).json({
+			status: "fail",
+			message: err,
+		});
+	}
+};
+
+

@@ -20,7 +20,9 @@ const todoSchema = mongoose.Schema(
 			type: String,
 			enum: ["Low", "Medium", "High"],
 		},
+		isDone: { type: Boolean, default: false },
 		isDeleted: { type: Boolean, default: false },
+		isImportant: { type: Boolean, default: false },
 		expired_at: { type: Date, default: null },
 	},
 	{
