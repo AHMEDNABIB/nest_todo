@@ -2,6 +2,45 @@ const mongoose = require("mongoose");
 
 const Todo = require("../models/Todo");
 
+
+exports.getStatus = async (req, res) => {
+	const status = req.params.status;
+	// const isDeleted = req.params.isDeleted
+	// console.log(status, isDeleted)
+	try {
+		const todo = await Todo.find({ status: status });
+		res.status(200).json({
+			status: "success",
+			results: todo.length,
+			data: todo,
+		});
+	} catch (error) {
+		res.status(500).json({ error: "Internal Server Error" });
+	}
+	// const { status, isDelete } = req.query;
+	// const filter = {};
+
+	// if (status) {
+	// 		filter.status = status;
+	// }
+
+	// 	if (isDelete !== undefined) {
+	// 			// If isDelete is provided, add it to the filter based on the value
+	// 			filter.isDelete = isDelete === "true" ? true : false;
+	// 	}
+
+	// 	try {
+	// 		const tasks = await Todo.find(filter);
+	// 		res.status(200).json({
+	// 			status: "success",
+	// 			results: todo.length,
+	// 			data: todo,
+	// 		});
+	// 	} catch (error) {
+	// 		res.status(500).json({ error: "Internal Server Error" });
+	// 	}
+};
+
 exports.getAllTodo = async (req, res) => {
 	try {
 		const todo = await Todo.find({});
