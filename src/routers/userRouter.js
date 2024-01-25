@@ -17,7 +17,7 @@ userRouter.post("/add", checkLogin, addUser);
 userRouter.put("/:id", checkLogin, updateUser);
 userRouter.delete("/:id", checkLogin, deleteUser);
 userRouter.post("/login", loginUser);
-userRouter.post("/register", checkLogin, addUser);
+userRouter.post("/register", addUser);
 userRouter.post("/googleSignIn", googleSignIn);
 
 module.exports = { userRouter };
