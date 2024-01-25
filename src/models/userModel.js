@@ -34,11 +34,11 @@ const userSchema = new Schema({
     // },
     address:{
         type: String,
-        required: [true, 'User address is required'],
+        // required: [true, 'User address is required'],
     },
     phone:{
         type: String,
-        required: [true, 'User phone is required'],
+        // required: [true, 'User phone is required'],
     },
     role: {
         type: String,
