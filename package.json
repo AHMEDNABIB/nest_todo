@@ -1,7 +1,7 @@
 {
-  "name": "ecommerce-mern-project",
+  "name": "todo",
   "version": "1.0.0",
-  "description": "Ecommerce mern project",
+  "description": "todo project",
   "main": "server.js",
   "scripts": {
     "start": "node ./src/server.js",
