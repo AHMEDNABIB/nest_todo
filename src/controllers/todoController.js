@@ -5,40 +5,36 @@ const Todo = require("../models/Todo");
 
 exports.getStatus = async (req, res) => {
 	const status = req.params.status;
-	// const isDeleted = req.params.isDeleted
-	// console.log(status, isDeleted)
+	
+
+	  const page = parseInt(req.query.page);
+	  const limit = parseInt(req.query.limit);
+
+	  const startIndex = (page - 1) * limit;
+	  const endIndex = page * limit;
+	
+	  console.log(startIndex,endIndex)
+	
+	
+	 const statusLength = await Todo.countDocuments({status: status, }).exec();
+
+
 	try {
-		const todo = await Todo.find({ status: status });
+       
+
+		const todo = await Todo.find({ status: status })
+			.limit(limit)
+			.skip(startIndex);
 		res.status(200).json({
 			status: "success",
-			results: todo.length,
+			length: statusLength,
+		
 			data: todo,
 		});
 	} catch (error) {
 		res.status(500).json({ error: "Internal Server Error" });
 	}
-	// const { status, isDelete } = req.query;
-	// const filter = {};
 
-	// if (status) {
-	// 		filter.status = status;
-	// }
-
-	// 	if (isDelete !== undefined) {
-	// 			// If isDelete is provided, add it to the filter based on the value
-	// 			filter.isDelete = isDelete === "true" ? true : false;
-	// 	}
-
-	// 	try {
-	// 		const tasks = await Todo.find(filter);
-	// 		res.status(200).json({
-	// 			status: "success",
-	// 			results: todo.length,
-	// 			data: todo,
-	// 		});
-	// 	} catch (error) {
-	// 		res.status(500).json({ error: "Internal Server Error" });
-	// 	}
 };
 
 exports.getAllTodo = async (req, res) => {
@@ -56,41 +52,7 @@ exports.getAllTodo = async (req, res) => {
 		});
 	}
 
-	// try {
-	// 	console.log("ssssssss");
-	// 	const page = req.query.page * 1 || 1;
-	// 	const limit = req.query.limit * 1 || 10;
-	// 	const skip = (page - 1) * limit;
-
-	// 	const totalTodo = await Todo.countDocuments();
-	// 	console.log(skip);
-	// 	console.log(totalTodo);
-
-	// 	// if (skip >= totalTodo) {
-	// 	// 	return res.status(400).json({
-	// 	// 		status: "fail",
-	// 	// 		error: "These Page Does not exist",
-	// 	// 	});
-	// 	// }
-
-	// 	const todo = await Todo.find().skip(skip).limit(limit);
-
-	// 	const startTodo = skip + 1;
-	// 	const endTodo = Math.min(skip + limit, totalTodo);
-
-	// 	res.status(200).json({
-	// 		status: "success",
-	// 		startTodo,
-	// 		endTodo,
-	// 		totalTodo,
-	// 		data: todo,
-	// 	});
-	// } catch (error) {
-	// 	res.status(404).json({
-	// 		status: "fail",
-	// 		message: error,
-	// 	});
-	// }
+	
 };
 
 exports.getAllTodoByPagination = async (req, res) => {
@@ -219,6 +181,7 @@ exports.softDeleteTodo = async (req, res) => {
 			todoId,
 			{
 				isDeleted: true,
+				status:"trash",
 				expired_at: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
 			},
 			{ new: true }
@@ -239,7 +202,8 @@ exports.restoreTodo = async (req, res) => {
 		const todoId = req.params.id;
 		const restoredTodo = await Todo.findByIdAndUpdate(
 			todoId,
-			{ isDeleted: false, expired_at: null },
+			{ isDeleted: false, status:"inprogress", expired_at: null },
+			
 			{ new: true }
 		);
 
@@ -254,24 +218,6 @@ exports.restoreTodo = async (req, res) => {
 };
 
 
-exports.restoreTodo = async (req, res) => {
-	try {
-		const todoId = req.params.id;
-		const restoredTodo = await Todo.findByIdAndUpdate(
-			todoId,
-			{ isDeleted: false, expired_at: null },
-			{ new: true }
-		);
-
-		if (!restoredTodo) {
-			return res.status(404).json({ error: "Task not found" });
-		}
-
-		res.json(restoredTodo);
-	} catch (error) {
-		res.status(500).json({ error: "Internal Server Error" });
-	}
-};
 
 exports.importantTodo = async (req, res) => {
 	try {
@@ -350,6 +296,7 @@ exports.tagsTodo = async (req, res) => {
 };
 
 exports.doneTodo = async (req, res) => {
+	console.log(req.params.id)
 	try {
 		const todo = await Todo.findByIdAndUpdate(req.params.id, req.body, {
 			new: true,
