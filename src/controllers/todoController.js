@@ -4,7 +4,15 @@ const Todo = require("../models/Todo");
 
 
 exports.getStatus = async (req, res) => {
-	const status = req.params.status;
+
+	
+	let status = req.params.status;
+
+	 const statusQuery =
+		status === "inprogress" ? ["inprogress", "done"] : status;
+	
+	console.log(statusQuery)
+
 	
 
 	  const page = parseInt(req.query.page);
@@ -16,13 +24,15 @@ exports.getStatus = async (req, res) => {
 	  console.log(startIndex,endIndex)
 	
 	
-	 const statusLength = await Todo.countDocuments({status: status, }).exec();
+	 const statusLength = await Todo.countDocuments({
+			status: statusQuery,
+		}).exec();
 
 
 	try {
        
 
-		const todo = await Todo.find({ status: status })
+		const todo = await Todo.find({ status: statusQuery })
 			.limit(limit)
 			.skip(startIndex);
 		res.status(200).json({
