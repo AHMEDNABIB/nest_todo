@@ -31,4 +31,7 @@ router.patch("/done/:id", todoController.doneTodo);
 router.patch("/priority/:id", todoController.priorityTodo);
 router.patch("/tags/:id", todoController.tagsTodo);
 
+
+router.get("/status/:status", todoController.getStatus);
+
 module.exports = router;

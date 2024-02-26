@@ -9,7 +9,7 @@ const todoSchema = mongoose.Schema(
 		description: String,
 		status: {
 			type: String,
-			enum: ["inprogress", "done", "important"],
+			enum: ["inprogress", "done", "important","trash"],
 			default: "inprogress",
 		},
 		tags: {
